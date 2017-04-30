@@ -1,0 +1,202 @@
+﻿# webpack安装的环境变量问题
+
+---
+
+多次尝试初始化==> 全局安装 ==> 局部安装 ==> webpack指令失败,失败原因：webpack不是内部或外部指令,搜索问题得出结论：环境变量配置错误导致。
+
+## 以nodejs安装到D盘为例解决方案：
+    
+    1.安装node.js
+        通过path路径查看环境变量,如果出现D:\nodejs\ 说明安装成功。
+    
+    2.修改默认的node路径
+        新建一个NODE_PATH的键,输入设置系统变量NODE_PATH为D:\nodejs\node_global\node_modules
+    
+    3.Administrator用户变量的PATH路径也要改为以上的地址。
+    
+    4.配置npm的路径
+        在nodejs文件夹下新建两个文件夹,node_global和node_cache,启动cmd,输入以下的命令:
+    
+        npm config set prefix "d:\nodejs\node_global"npm config set cache "d:\nodejs\node_cache"
+    
+    5.通过npm在d:nodejs文件夹全局安装webpack
+        npm install webpack -g
+    
+    6.在D:\nodejs\node_globalnpm下局部安装webpack
+        npm install webpack --save-dev
+    
+    7.在以上的文件夹下就可以使用webpack了
+        
+        node
+        require('webpack')
+    可以检测除是否配置成功
+
+## 常用webpack指令:
+
+    webpack------->进行打包
+    webpack --watch------->自动监控进行打包
+    webpack --display-modules ------->打包时显示隐藏的模块
+    webpack --display-chunks------->打包时显示原因
+    webpack --display-error-details------->显示详细错误信息
+    npm install style-loader css-loader --save-dev------->下载loader处理对应的文件
+    npm install html -webpack-plugin --save-dev------->安装html插件
+
+### loader的特性：
+    
+Webpack 本身只能处理 JavaScript 模块，如果要处理其他类型的文件，就需要使用 loader 进行转换。
+
+Loader 可以理解为是模块和资源的转换器，它本身是一个函数，接受源文件作为参数，返回转换的结果。这样，我们就可以通过 require 来加载任何类型的模块或文件，比如 CoffeeScript、 JSX、 LESS 或图片。
+
+ - Loader 可以通过管道方式链式调用，每个 loader
+    可以把资源转换成任意格式并传递给下一个 loader ，但是最后一个 loader 必须返回 JavaScript。
+ - Loader 可以同步或异步执行。
+ - Loader 运行在 node.js 环境中，所以可以做任何可能的事情。
+ - Loader 可以接受参数，以此来传递配置项给 loader。
+ - Loader 可以通过文件扩展名（或正则表达式）绑定给不同类型的文件。
+ - Loader 可以通过 npm 发布和安装。
+ - 除了通过 package.json 的 main 指定，通常的模块也可以导出一个 loader 来使用。
+ - Loader 可以访问配置。
+ - 插件可以让 loader 拥有更多特性。
+ - Loader 可以分发出附加的任意文件。
+
+安装loader:
+```
+    npm install css-loader style-loader
+```
+写入一个style.css:
+```
+    /* style.css */
+body { background: yellow; }
+```
+修改之前的entry.js：
+```
+    require("!style-loader!css-loader!./style.css") // 载入 style.css
+document.write('It works.')
+document.write(require('./module.js'))
+```
+将 entry.js 中的 require("!style!css!./style.css") 修改为 require("./style.css"),再执行:
+```
+    webpack entry.js bundle.js --module-bind "css=style-loader!css-loader"
+```
+    在该电脑下是双引号
+    
+刷新index.html之后可以看到效果,body为黄色
+
+### 配置文件
+除了以上的传入参数的方法,还可以通过指定的配置文件来执行,默认情况下,会搜索当前目录的webpack.config.js文件,这个文件是一个node.js模块,返回一个json格式的配置信息对象,或者通过--config选项来配置文件,在根目录下(D:\nodejs\node_globalnpm)创建 packge.json来添加webpack需要的以来:
+```
+    {
+      "name": "webpack-example",
+      "version": "1.0.0",
+      "description": "A simple webpack example.",
+      "main": "bundle.js",
+      "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+      },
+      "keywords": [
+        "webpack"
+      ],
+      "author": "zhaoda",
+      "license": "MIT",
+      "devDependencies": {
+        "css-loader": "^0.21.0",
+        "style-loader": "^0.13.0",
+        "webpack": "^1.12.2"
+      }
+    }
+```
+
+```
+    # 如果没有写入权限，请尝试如下代码更改权限
+    chflags -R nouchg .
+    sudo chmod  775 package.json
+``` 
+然后npm install。
+接着创建配置文件webpack.config.js：
+```
+    var webpack = require('webpack')
+
+    module.exports = {
+      entry: './entry.js',
+      output: {
+        path: __dirname,
+        filename: 'bundle.js'
+      },
+      module: {
+        loaders: [
+          {test: /\.css$/, loader: 'style-loader!css-loader'}
+        ]
+      }
+    }
+```
+最后直接在根目录下运行webpack,可以看到上一节index内容同样的结果。
+
+### 插件
+插件可以完成更多 loader 不能完成的功能。
+插件的使用一般是在 webpack 的配置信息 plugins 选项中指定。利用一个最简单的 BannerPlugin 内置插件来实践插件的配置和运行，这个插件的作用是给输出的文件头部添加注释信息。
+
+Webpack 本身内置了一些常用的插件，还可以通过 npm 安装第三方插件。
+
+修改 webpack.config.js，添加 plugins：
+```
+    var webpack = require('webpack')
+
+    module.exports = {
+      entry: './entry.js',
+      output: {
+        path: __dirname,
+        filename: 'bundle.js'
+      },
+      module: {
+        loaders: [
+          {test: /\.css$/, loader: 'style-loader!css-loader'}
+        ]
+      },
+      plugins: [
+        new webpack.BannerPlugin('This file is created by quwei')
+      ]
+    }
+```
+运行webpack,打开bundle.js,可以看到
+```
+    /*! This file is created by quwei */
+    /******/ (function(modules) { // webpackBootstrap
+    /******/ 	// The module cache
+    /******/ 	var installedModules = {};
+    //以后部分省略
+```
+
+#### 开发环境
+当项目逐渐变大，webpack 的编译时间会变长，可以通过参数让编译的输出内容带有进度和颜色。
+```
+    webpack --progress --colors
+```
+
+如果不想每次修改模块后都重新编译，那么可以启动监听模式。开启监听模式后，没有变化的模块会在编译后缓存到内存中，而不会每次都被重新编译，所以监听模式的整体速度是很快的。
+```
+    webpack --progress --colors --watch
+```
+
+当然，使用 webpack-dev-server 开发服务是一个更好的选择。它将在 localhost:8080启动一个express静态资源 web 服务器,并且会以监听模式自动运行 webpack,可以浏览项目中的页面和编译后的资源输出，并且通过一个 socket.io 服务实时监听它们的变化并自动刷新页面。
+
+安装
+$ npm install webpack-dev-server -g
+
+运行
+$ webpack-dev-server --progress --colors
+
+#### 注意:
+    当直接运行时,可能由于webpack-dev-server的版本过高可能是2.x以上的版本,和webpack无法匹配上,会出现Cannot find module 'webpack/bin/config-yargs'的情况。
+
+所以需要直接卸载webpack-dev-server,npm uninstall webpack-dev-server -g,再安装一个低版本的npm uninstall webpack-dev-server -g例如：
+    
+    npm install webpack-dev-server@1.15.0 -g
+    
+使用http://localhost:8080/index.html对于js文件的变化是无法实时展现出来的,只能手动刷新后有效,可以使用以下方式自动刷新页面。
+
+1. iframe 模式
+    我们不访问 http://localhost:8080，而是访问http://localhost:8080/webpack-dev-server/index.html
+2. inline 模式
+    在命令行中指定该模式，webpack-dev-server --inline。这样http://localhost:8080/index.html 页面就会在 js 文件变化后自动刷新了。
+
+通过这种监视到的是入口js以及它引用的资源,个人倾向于第二种方式
