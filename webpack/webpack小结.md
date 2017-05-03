@@ -247,7 +247,7 @@ Webpack 本身内置了一些常用的插件，还可以通过 npm 安装第三�
     //以后部分省略
 ```
 
-#### 开发环境
+### 开发环境
 当项目逐渐变大，webpack 的编译时间会变长，可以通过参数让编译的输出内容带有进度和颜色。
 ```
     webpack --progress --colors
@@ -281,3 +281,85 @@ $ webpack-dev-server --progress --colors
     在命令行中指定该模式，webpack-dev-server --inline。这样http://localhost:8080/index.html 页面就会在 js 文件变化后自动刷新了。
 
 通过这种监视到的是入口js以及它引用的资源,个人倾向于第二种方式
+
+
+webpack中配置的打包的使用webpack的plugin, 压缩ES6代码可以按照以下的步骤:
+
+### webpack打包ES6
+首先，建立如下的目录：
+```
+    /web根目录
+    -es6
+       main.js
+       Person.js
+    index.html
+    webpack.config.js
+```
+ es6里面存放的ES6风格的代码,main.js作为入口文件,使用 babel 对 ES6 风格的代码进行转换，所以要安装babel-loader 加载器，在命令行输入如下命令：
+ 
+```
+    npm install babel-preset-es2015 --sava-dev //安装转码规则
+    npm install babel-loader --save-dev //安装 babel-loader
+    
+```
+#### webpack配置文件
+```
+    var webpack = require('webpack');
+    var path = require('path');
+    
+    module.exports = {
+      entry: "./es6/main.js",//入口文件
+      output: {//打包输出的文件
+        path: __dirname,
+        filename: 'bundle.js'
+      },
+      module: {
+        loaders: [
+          {
+            test: path.join(__dirname, 'es6'),
+            loader: 'babel-loader',
+            query: {
+              presets: ['es2015']
+            }
+          }
+        ]
+      },
+      resolve: {// 现在你require文件的时候可以直接使用require('file')，不用使用require('file.coffee')
+        extensions: ['', '.js', '.json', '.coffee']
+      }
+    }
+``` 
+#### 有关代码
+##### main.js
+```
+    import Person from './Person.js';
+
+    let p = new Person ('张三',20);
+    document.write(p.say());
+```
+#### index.html
+```
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8"/>
+        <title>Test</title>
+    </head>
+    <body>
+        <script src="bundle.js"></script>
+    </body>
+    </html>
+```
+#### classPerson
+```
+    class Person{ 
+        constructor(name, age){ 
+            this.name = name; 
+            this.age = age; 
+        } 
+        say(){ 
+            return `我是${this.name},我今年${this.age}岁了。`; 
+        }
+    }
+    export default Person;
+```
