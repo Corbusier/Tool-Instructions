@@ -1,6 +1,6 @@
 define(['jquery'],function($){  //注意模块的写法  
     //1,define intenal variable area//变量定义区  
-    var myModule = {}; //推荐方式  
+    var myModule = {};//推荐方式  
     var moduleName = "work module 01";  
     var version = "1.0.0";  
       

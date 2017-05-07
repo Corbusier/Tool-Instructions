@@ -9,10 +9,11 @@ require.config({
     //define each js frame path, not need to add .js suffix name  
     //定义各个JS框架路径名,不用加后缀 .js  
     ,paths:{   
-        "jquery":["http://libs.baidu.com/jquery/2.0.3/jquery", "lib/jquery/jquery-1.9.1.min"] //把对应的 jquery 这里写对即可  
+        "jquery":["lib/jquery/jquery-3.2.0"] //把对应的 jquery 这里写对即可  
         ,"workjs01":"work/workjs01"   
         ,"workjs02":"work/workjs02"  
         ,"underscore":"" //路径未提供，可网上搜索然后加上即可  
+        ,"lodash":["lib/lodash/lodash"]
     }  
       
     //include NOT AMD specification js frame code  
@@ -20,13 +21,16 @@ require.config({
     ,shim:{   
         "underscore":{  
             "exports":"_"  
-        }  
+        },  
+        "lodash":{
+            "exports":"_"
+        }
     }  
       
 });  
   
 //2，about load each js code basing on different dependency  
 //按不同先后的依赖关系加载各个JS文件  
-require(["jquery","workjs01"],function($,w1){  
+require(["jquery","lodash","workjs01"],function($,w1){  
     require(['workjs02']);  
 });  
