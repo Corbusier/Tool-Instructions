@@ -9,8 +9,6 @@ define(['workjs01'],function(w01){
 	// 		$("#" + (refId + "")).html(strHtml+"");
 	// 	}
 	// };
-	w01.loadTip("本页文件都加载完成，本页设计 workjs01.js 文件依赖jquery, workjs02.js 依赖 workjs01.js","loadMsgCon");
-
 	return{
 		"moduleName" : moduleName
 		,"version" : moduleVersion

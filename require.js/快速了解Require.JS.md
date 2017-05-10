@@ -2,7 +2,10 @@
 
 R.J的主要功能是按不同的先后依赖关系,异步加载JS文件,适合在浏览器中使用,可以确保依赖的JS文件加载完成之后再加载当前的文件,核心的思想是AMD。只做一件事：模块化。而模块化的作用就是避免全局变量污染,命名冲突的问题,它可以作为一种命名空间使用。
 
-RequireJS主要的功能：1)引入需要使用的命名空间(顺便加个别名也行)；2)将自己的代码放到命名空间中，避免全局污染。
+RequireJS主要的功能：
+1)引入需要使用的命名空间(顺便加个别名也行)；
+2)将自己的代码放到命名空间中，避免全局污染。
+
 RequireJS 定义了(define)一个命名空间，在定义的时候，顺便引用了需要使用其他命名空间。按照 RequireJS 的术语，它把命名空间叫做“模块”。注意，在这里，RequireJS 定义的模块(命名空间)是匿名的，没有取名，这是和c#不同的地方。
 
 ## 定义模块的方式
@@ -86,7 +89,7 @@ require.js的入口文件main.js的配置是这样的
 ``` 
 paths是预定义的一些模块,比如js/zepto定义为zepto模块。
 
-shim处理了导出名称和依赖关系。第1个zepto模块的全局变量名称为’$’（这个就好比JQuery.js我们叫做jquery，实际用的时候我们用$作为变量），第3个frozen模块表示当它被加载的时候，需要先加载zepto模块。
+shim处理了导出名称和依赖关系。第1个zepto模块的全局变量名称为$（这个就好比 jquery.js我们叫做jquery，实际用的时候我们用$作为变量），第3个frozen模块表示当它被加载的时候，需要先加载zepto模块。
 
 ## 加载依赖的js方式
 目前为止遇到了两个关键字,一个是define,它可以用来定义模块(命名空间),还有一个是require,可以直接加载其他的js。
@@ -113,6 +116,40 @@ shim处理了导出名称和依赖关系。第1个zepto模块的全局变量名�
 Click Me：
 
 [Tool-Instructions](/require.js/userExample01/index.html)
+
+## 使用r.js打包
+如果模块数很多,那么请求数就会大大增加,而require.js针对这个情况提出了解决方案,就是r.js。首先要下载r.js,然后把它放在项目的根目录下使用。还是以上一个实际例子为例
+<pre>
+.userExample01
+├── index.html      
+├── main.js(主文件)  
+├── main-built.js
+├── r.js          
+├── built.js             
+├── static
+   ├── scripts
+       ├── src
+            ├── lib
+                ├── jquery
+                  ├── jquery
+                ├── require
+                  ├── require
+            ├── work
+                ├── workjs01
+                ├── workjs02
+.
+</pre>
+可以看到在根目录下多了r.js、built.js、main-built.js和built.js。r.js是用来压缩代码的,而main-built.js是压缩后的模块。具体使用方式：
+创建built.js,然后配置built文件,和main.js差别不大,只是多了name属性和out属性,out是在该目录下压缩后的输出文件,name指向的是require.js的入口文件即main.js,可以这样理解,从模块文件lib、work这一级需要返回三级才能到main.js所在的目录,所以：
+```
+    ,name: "../../../main"
+    ,out:"main-built.js"
+```
+然后cmd进入该目录执行：
+```
+    node r.js -o built.js
+```
+就可以得到main-built了,在index.html中修改原本指向的main.js为man-built.js。打开控制台的network可以看到请求数比之前减少了,这在大型项目中使用可以大大减少请求。
 
 ## 技巧
 ### CDN

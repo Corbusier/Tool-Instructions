@@ -1,4 +1,3 @@
-
 /* for img-center */
 .img-center {
     width: 200px;
@@ -7,24 +6,20 @@
     overflow: hidden;
     position: relative;
 }
-
 .img-center img {
     display: block;
     position: absolute;
 }
-
 .img-center img.aspectFill-x {
     width: 100%;
     top: 50%;
     transform: translateY(-50%);
 }
-
 .img-center img.aspectFill-y {
     height: 100%;
     left: 50%;
     transform: translateX(-50%);
 }
-
 /* for dialog */
 .dialog-dropback {
     position: fixed;
@@ -34,7 +29,6 @@
     left: 0;
     background-color: rgba(0, 0, 0, 0.3);
 }
-
 .dialog-dropback .container {
     position: absolute;
     width: 300px;
@@ -43,19 +37,16 @@
     top: 50%;
     transform: translate(-50%, -50%);
 }
-
 .dialog-dropback .head {
     padding: 15px;
     text-align: center;
 }
-
 .dialog-dropback .content {
     padding: 0px 15px 15px;
     font-size: 14px;
     color: #666666;
     line-height: 1.8;
 }
-
 button {
     border: none;
     background: none;
@@ -70,12 +61,9 @@ button {
     height: 50px;
     font-size: 15px;
 }
-
 .cancel {
     border-right: 1px solid #e5e5e5;
 }
-
-
 button.aspect {
     width: 200px;
     height: 60px;
