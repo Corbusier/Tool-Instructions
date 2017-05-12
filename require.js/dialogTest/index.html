@@ -3,10 +3,72 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Dialog</title>
+	<style type="text/css" media="screen">
+		.button.green {
+		    color: hsl(88, 70%, 30%)!important;
+		    background-color: hsl(88, 70%, 60%);
+			box-shadow: inset rgba(255,254,255,0.6) 0 0.3em .3em, inset rgba(0,0,0,0.15) 0 -0.1em .3em, /* inner shadow */ hsl(88, 70%, 40%) 0 .1em 3px, hsl(88, 70%, 30%) 0 .3em 1px, /* color border */ rgba(0,0,0,0.2) 0 .5em 5px;
+		}
+		.button:before {
+		    font: 1.2em/0 sans-serif;
+		    content: attr(data-icon);
+		    margin-right: 6px;
+		}
+		.back, .back.glossy:after, .back.glass:after {
+		    border-top-color: rgba(255,255,255,0.5);
+		    border-radius: 1.6em 1.6em 1em 1em / 4em 4em 1em 1em;
+		}
+		.back.glossy:after, .back.glass:after {
+		    left: 6%;
+		    width: 88%;
+		}
+		.button {
+		    text-decoration: none;
+		    font: 24px/1em 'Droid Sans', sans-serif;
+		    font-weight: bold;
+		    text-shadow: rgba(255,255,255,.5) 0 1px 0;
+		    user-select: none;
+		    padding: .5em .6em .4em .6em;
+		    margin: .5em;
+		    display: inline-block;
+		    position: relative;
+		    -webkit-border-radius: 8px;
+		    -moz-border-radius: 8px;
+		    border-radius: 8px;
+		    border-top: 1px solid rgba(255,255,255,0.8);
+		    border-bottom: 1px solid rgba(0,0,0,0.1);
+		    background-image: -webkit-gradient(radial, 50% 0, 100, 50% 0, 0, from( rgba(255,255,255,0) ), to( rgba(255,255,255,0.7) )), url(noise.png);
+		    transition: background .2s ease-in-out;
+		    color: hsl(0, 0%, 40%) !important;
+		    background-color: hsl(0, 0%, 75%);
+		    box-shadow: inset rgba(255,254,255,0.6) 0 0.3em .3em, inset rgba(0,0,0,0.15) 0 -0.1em .3em, /* inner shadow */ hsl(0, 0%, 60%) 0 .1em 3px, hsl(0, 0%, 45%) 0 .3em 1px, /* color border */ rgba(0,0,0,0.2) 0 .5em 5px;
+		}
+		a{
+			text-decoration:none;
+		}
+		.back.glossy:after, .back.glass:after {
+		    left: 6%;
+		    width: 88%;
+		}
+		.back, .back.glossy:after, .back.glass:after {
+		    border-top-color: rgba(255,255,255,0.5);
+		    border-radius: 1.6em 1.6em 1em 1em / 4em 4em 1em 1em;
+		}
+		.button.glossy::after, .button.glass::after {
+		    content: "";
+		    position: absolute;
+		    width: 90%;
+		    height: 60%;
+		    top: 0px;
+		    left: 5%;
+		    background-image: -webkit-gradient(linear, 0% 0, 100% 0, from(rgba(255, 255, 255, 0.54902)), color-stop(0.5, rgba(255, 255, 255, 0)), color-stop(0.8, rgba(255, 255, 255, 0)), to(rgba(255, 255, 255, 0.498039)));
+		    border-radius: 0.5em 0.5em 1em 2em 1em 2em;
+		}
+	</style>
 	<link rel="stylesheet" type="text/css" href="static/style/src/demo.css">
 </head>
 <body>
-	<button class="aspect">Please Click Me!</button>
+	<a href="#" class="aspect button green back glossy">Click ME!</a>
 	<div class="full-tip-box">
         <span class="full-tip">
             <span class="inner">
