@@ -16,11 +16,12 @@ Click Me：[Promise-Ajax](https://github.com/Corbusier/Tool-Instructions/tree/ma
 这整个过程需要图片加载完毕后才能获取图片的原始宽高，才能运行模块，在使用时直接调用它的方法即可。
 
 Click Me：[完整代码](https://github.com/Corbusier/Tool-Instructions/tree/master/require.js/imgTest)
+
 Click Me：[在线演示](https://corbusier.github.io/Tool-Instructions/require.js/imgTest/index.html)
 
 
 ### 3.自定义弹窗模块
-由点击button开始展开的一系列事件，弹窗、标题的拖拽、提醒功能等模块实现这些功能，并且弹窗和提醒功能的内容可以完全实现用户自定义，关于resize的debuncing优化，一次完整的require模块化的实践过程。
+由点击button开始展开的一系列事件，弹窗、标题的拖拽、提醒功能等模块实现这些功能，并且弹窗和提醒功能的内容可以完全实现用户自定义，关于resize的debuncing优化，并使用r.js减少请求数。一次完整的require模块化的实践过程。
 
 Click Me：[完整代码](https://github.com/Corbusier/Tool-Instructions/tree/master/require.js/dialogTest)
 
