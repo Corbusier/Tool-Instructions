@@ -1,6 +1,6 @@
 ﻿# README
 
-require.js微型demo，模块化由浅入深的过程
+> require.js微型demo，模块化由浅入深的过程
 
 ### 1.通过promise的ajax请求
 在主文件(index)下列出paths加载模块，将数据请求和数据处理分别置于不同的模块下，请求的方法是利用JQuery中的get方法，其中封装好的Promise，返回的也是Promise对象。然后在统一的模块(request.js)管理所有返回的数据。
