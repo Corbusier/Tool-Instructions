@@ -3,12 +3,10 @@
 	name: "../../../main",
 	paths:{
 		'jquery': "vendor/jquery/jquery"
-		,'createTreeHTML':"module/createTreeHTML/createTreeHTML"
+		,'tool':"module/tool/tool"
 		,'data':"module/data/data"
 		,'handle':"module/handleData/handleData"
-		,'createNavHTML':"module/createNavHTML/createNavHTML"
-		,'createFilesHTML':"module/createFilesHTML/createFilesHTML"
-		,'positionSpanById':"module/positionSpanById/positionSpanById"
+		,'render':"module/render/render"
 	},
 	shim: {
 		'jquery': {
