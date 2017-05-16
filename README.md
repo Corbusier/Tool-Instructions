@@ -21,6 +21,7 @@
  - [案例之Promise的ajax请求](https://github.com/Corbusier/Tool-Instructions/tree/master/require.js/ajax(promise))
  - [案例之图片加载](https://github.com/Corbusier/Tool-Instructions/tree/master/require.js/imgTest)
  - [案例之自定义弹窗模块](https://github.com/Corbusier/Tool-Instructions/tree/master/require.js/dialogTest)
+ - [案例之微云模块化拆解](https://github.com/Corbusier/Tool-Instructions/tree/master/require.js/Tencent-module(%E4%B8%8D%E9%97%B4%E6%96%AD%E6%9B%B4%E6%96%B0))
 
 ## [gulp](https://github.com/Corbusier/Tool-Instructions/tree/master/gulp)
 
