@@ -1,6 +1,6 @@
 ﻿# README
 
-require.js微型demo，模块化由浅入深的过程
+> require.js微型demo，模块化由浅入深的过程
 
 ### 1.通过promise的ajax请求
 在主文件(index)下列出paths加载模块，将数据请求和数据处理分别置于不同的模块下，请求的方法是利用JQuery中的get方法，其中封装好的Promise，返回的也是Promise对象。然后在统一的模块(request.js)管理所有返回的数据。
@@ -27,6 +27,10 @@ Click Me：[完整代码](https://github.com/Corbusier/Tool-Instructions/tree/ma
 
 Click Me：[在线演示](https://corbusier.github.io/Tool-Instructions/require.js/dialogTest/index.html)
 
+### 4.数据生成树形菜单
+根据data数据生成的树形菜单，模拟腾讯微云的部分功能原理，拆分模块，化整为零，利用命名空间避免全局变量污染，拆分的模块有利于代码复用，并且便于维护。不间断更新。
 
+Click Me : [完整代码](https://github.com/Corbusier/Tool-Instructions/tree/master/require.js/Tencent-module(%E4%B8%8D%E9%97%B4%E6%96%AD%E6%9B%B4%E6%96%B0))
 
+Click Me : [在线演示](https://corbusier.github.io/Tool-Instructions/require.js/Tencent-module(%E4%B8%8D%E9%97%B4%E6%96%AD%E6%9B%B4%E6%96%B0)/index.html)
 
