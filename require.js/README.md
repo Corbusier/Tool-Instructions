@@ -27,8 +27,11 @@ Click Me：[完整代码](https://github.com/Corbusier/Tool-Instructions/tree/ma
 
 Click Me：[在线演示](https://corbusier.github.io/Tool-Instructions/require.js/dialogTest/index.html)
 
-### 4.数据生成树形菜单
-根据data数据生成的树形菜单，模拟腾讯微云的部分功能原理，拆分模块，化整为零，利用命名空间避免全局变量污染，拆分的模块有利于代码复用，并且便于维护。不间断更新。更新的过程中可能会出现bug，发现解决之后再跟进新的版本。
+### 4.腾讯微云模块化功能拆分
+根据data数据生成的树形菜单，不同的功能拆分为模块，化整为零，利用命名空间避免全局变量污染，拆分的模块有利于代码复用，并且便于维护。不间断更新。更新的过程中可能会出现bug，发现解决之后再跟进新的版本。
+
+> May.18th.2017，暂至重命名功能，发现问题亟待解决。
+>> 渲染功能模块中的data数据无法更新，带来的连锁bug反应。
 
 Click Me : [完整代码](https://github.com/Corbusier/Tool-Instructions/tree/master/require.js/Tencent-module%EF%BC%88%E4%B8%8D%E9%97%B4%E6%96%AD%E6%9B%B4%E6%96%B0%EF%BC%89)
 
