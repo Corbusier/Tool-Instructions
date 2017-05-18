@@ -1,12 +1,13 @@
 define(['data'],function(data){
 	let handle = {
 		getSelfById(data,id){
+			console.log(data)
 			return data.find(function (value){
 				return value.id == id;
 			})
 		},
 		getChildsById (data,id){
-			return data.filter(function (value){
+			return data.filter(function(value){
 				return value.pid == id;
 			})	
 		},
@@ -20,13 +21,19 @@ define(['data'],function(data){
 			return arr;
 		},
 		getTreeById(id){
-			var treeMenu = document.querySelector(".tree-menu");	
-			var treeTitle = treeMenu.querySelectorAll(".tree-title");
+			let treeMenu = document.querySelector(".tree-menu");	
+			let treeTitle = treeMenu.querySelectorAll(".tree-title");
 			for( var i = 0; i < treeTitle.length; i++ ){
 				if( treeTitle[i].dataset.id == id ){
 					return treeTitle[i];
 				}
 			}
+		},
+		isTitleExist(data,value,id){
+			let childs = handle.getChildsById(data,id);
+			return childs.findIndex(function(item){
+				return item.title === value;
+			}) !== -1;
 		}
 	}	
 	return handle;

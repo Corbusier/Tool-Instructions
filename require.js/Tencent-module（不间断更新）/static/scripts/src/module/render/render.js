@@ -51,6 +51,37 @@ define(['data','handle'],function(data,handle){
 			});
 			return fileHtml;
 		}
+		,fileInner(value){
+			let str = `<div class="item">
+		                 <lable class="checkbox"></lable>
+		                     <div class="file-img">
+		                     <i></i>
+		                     </div>
+		                 <p class="file-title-box">
+		                     <span class="file-title">${value.title}</span>
+		                     <span class="file-edtor">
+		                         <input class="edtor" type="text">
+		                     </span>
+		                 </p>
+		             </div>`;
+		    return str;
+		}
+		/*<!--- 先传一个空对象,占据一个位置 --->*/
+		,createNewFile(){
+			var div = document.createElement("div");
+			div.className = "file-item";		
+			div.innerHTML = render.fileInner({});
+			return div;
+		}
+		// ,createFile(){
+		// 	if(!$(".create").get(0).isCreate) return;
+		// 	let firstElement = $(".file-list .file-item");
+		// 	let value = $(".file-list .file-item .edtor").val().trim();
+		// 	if(value){
+		// 		var isExist = handle.isTitleExist(data,value,currentId);
+		// 		console.log(isExist)
+		// 	}
+		// }
 	}
 	return render;
 })
