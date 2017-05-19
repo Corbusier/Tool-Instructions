@@ -59,9 +59,9 @@ define(function(require){
 				title:"Can't Take My Eyes Off you"
 			},
 			{
-				id:700,
-				pid:600,
-				title:"lrc"
+				id:5890,
+				pid:5000,
+				title:"Sharpe of you"
 			}
 		]
 	}

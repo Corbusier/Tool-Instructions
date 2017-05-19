@@ -2,6 +2,7 @@ define(['data','handle'],function(data,handle){
 	let render = {
 		createTreeHTML(id){
 			let childs = handle.getChildsById(data,id);
+			//console.log(childs)
 			let html = "<ul>";
 			childs.forEach( (value) => {
 				let level = handle.getParentsAllById(data,value.id).length;

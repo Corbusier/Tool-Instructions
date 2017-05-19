@@ -1,7 +1,6 @@
 define(['data'],function(data){
 	let handle = {
 		getSelfById(data,id){
-			console.log(data)
 			return data.find(function (value){
 				return value.id == id;
 			})
