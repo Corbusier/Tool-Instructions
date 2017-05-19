@@ -6,7 +6,6 @@ requirejs.config({
 		,'data':"module/data/data"
 		,'handle':"module/handleData/handleData"
 		,'render':"module/render/render"
-		//,'rebuild':"module/rebuild/rebuild"
 		,'fulltip':"module/fulltip/fulltip"
 	},
 	shim: {
