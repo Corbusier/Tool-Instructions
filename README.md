@@ -33,6 +33,7 @@ Click Me：[在线演示](https://corbusier.github.io/Tool-Instructions/require.
 
 #### 更新目录：
 > May.18th.2017，暂至重命名功能，发现问题亟待解决。
+
 > May.19th.2017，以上的bug解决，问题如下所示。Keep on
 
 - [x] 1. 文件区域进入下一级时，无法正确的判断全选的状态。
