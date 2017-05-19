@@ -8,6 +8,8 @@
 		,'handle':"module/handleData/handleData"
 		,'render':"module/render/render"
 		,'fulltip':"module/fulltip/fulltip"
+		,'dialog':"module/dialog/dialog"
+		,'drag':"module/drag/drag"
 	},
 	shim: {
 		'jquery': {

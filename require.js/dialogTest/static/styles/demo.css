@@ -1,0 +1,148 @@
+body{
+	margin:0;
+}
+h2,h3{
+	margin:0;
+	pading:0;
+}
+a{
+	color:#505254;
+	text-decoration:none;
+}
+button {
+    border: none;
+    background: none;
+    outline: none;
+}
+button.aspect {
+	display:inline-block;
+    font-size: 18px;
+    height:40px;
+    border: 1px solid #ccc;
+    border-radius:25px;
+    background-color:#000;
+    opacity:.7;
+    color:#fff;
+    padding:0 20px;
+}
+#full-tip{
+	width:400px;
+	height:253px;
+	border:1px solid #c8ccd3;
+	position: absolute;
+	left: 0;
+	top:0;
+	background-color:#fff;
+	box-shadow:3px 3px 6px -2px #000;
+	transition:.3s;
+	z-index:100;
+}
+.title{
+	height:60px;
+	border-bottom:1px solid #d8dce5;
+	cursor:move;
+}
+.title .titleName{
+	color:#020202;
+	font:18px/18px "微软雅黑";
+	float:left;
+	margin:22px 0 0 18px;
+}
+.title .close{
+	color:#747ca9;
+	margin:12px 18px 0 0;
+	float:right;
+	font-size:24px;
+	cursor:pointer;
+}
+.title .close:hover{
+	color:#000;
+}
+.content .tips{
+	padding:44px 92px 32px 92px;
+}
+.content .tips .asksure{
+	color:#020202;
+	font:16px/28px "微软雅黑";
+}
+.content .tips .text{
+	color:#868686;
+	font:12px/24px "微软雅黑";
+}
+.btnGroup{
+	float:right;
+	margin-right:21px;
+}
+.btnGroup a{
+	display:inline-block;
+	color:#505254;
+	width:90px;
+	height:34px;
+	border:1px solid #c7c9cf;
+	border-radius:34px;
+	text-align:center;
+	font:12px/34px "黑体";
+	margin-right:3px;
+}
+.btnGroup a:hover{
+	color:#fff;
+	background-color:#3091f2;
+	border:1px solid #3091f2;
+}
+.full-tip-box{
+    position: fixed;
+    top: -32px;
+    z-index: 1001;
+    text-align: center;
+    width: 400px;
+    left: 50%;
+    margin-left: -200px;
+    transition:.3s;
+}
+
+.full-tip {
+    display: inline-block;
+    border-radius: 0 0 3px 3px;
+    background: #fff;
+}
+
+.full-tip .inner {
+    position: relative;
+    display: inline-block;
+}
+
+.full-tip .text {
+    display: inline-block;
+    padding: 8px 38px 10px 63px;
+    color: #fff;
+    line-height: 14px;
+    font-size: 12px;
+    text-align: left;
+}
+.err,.ok,.warn{
+    top:0;
+}
+
+.err .full-tip{
+    background: #f49918;
+}
+.err .ico {
+    background-position: 0 -109px;
+}
+
+/* //正确的提示 */
+
+.ok .full-tip {
+    background: #75bc0f;
+}
+
+.ok .ico {
+    background-position: 0 -9px;
+}
+/* 提醒删除 */
+.warn .full-tip {
+    background: #f49918;
+}
+.warn .ico {
+    background-position: 0 -59px;
+}

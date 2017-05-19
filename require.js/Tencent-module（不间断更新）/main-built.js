@@ -131,6 +131,35 @@ define('handle',['data'],function(data){
 			return childs.findIndex(function(item){
 				return item.title === value;
 			}) !== -1;
+		},
+		getChildsAll(data,id){
+			let arr = [];
+			let self = handle.getSelfById(data,id);
+			arr.push(self);
+			let childs = handle.getChildsById(data,self.id);
+			childs.forEach(function (value){
+				arr = arr.concat(handle.getChildsAll(data,value.id));
+			})
+			return arr;
+		},
+		getChildsByIdArr(data,idArr){
+			let arr = [];
+			idArr.forEach(function(value){
+				arr = arr.concat(handle.getChildsAll(data,value));
+			})
+			return arr;
+		},
+		deleteChildsByIdArr(data,idArr){
+			var childs = handle.getChildsByIdArr(data,idArr);
+			for(var i = 0;i<data.length;i++){
+				for(var j = 0;j<childs.length;j++){
+					if(data[i] === childs[j]){
+						data.splice(i,1);
+						i--;
+						break;
+					}
+				}
+			}
 		}
 	}	
 	return handle;
@@ -243,6 +272,215 @@ define('fulltip',['jquery'],function($){
 	};
 	return fullTip;
 });
+define('drag',['jquery'],function($){
+	function Drag(options) {
+		//必填并且必须是一个对象
+		if(typeof options === "undefined" || options.constructor !== Object) {
+			//抛出错误
+			throw new Error("传入的参数错误，必须是对象");
+			return;
+		}
+		this.defaults = {
+			targetEle: null,
+			moveEle: null
+		}
+		//复制对象
+		$.extend(this.defaults,options);
+		if(this.defaults.moveEle) {
+			this.element = this.defaults.moveEle;
+		} else {
+			this.element = this.defaults.targetEle;
+		}
+		this.init = function(){
+			this.bind();
+		}
+		this.init();
+	}
+	Drag.prototype = {
+		constructor: Drag
+		,bind() {
+			//要把一个函数的this改变为指定的值，并且不调用函数
+			this.defaults.targetEle.onmousedown = this.downFn.bind(this);
+		}
+		,downFn(ev) {
+			this.disX = ev.clientX - this.element.offsetLeft;
+			this.disY = ev.clientY - this.element.offsetTop;
+			document.onmousemove = this.moveFn.bind(this);
+			document.onmouseup = this.upFn;
+			ev.preventDefault();
+		}
+		,moveFn(ev) {
+			this.element.style.left = ev.clientX - this.disX + "px";
+			this.element.style.top = ev.clientY - this.disY + "px";
+		}
+		,upFn() {
+			document.onmousemove = null;
+			document.onmouseup = null;
+		}
+	}
+	return Drag;
+});
+define('dialog',['jquery','drag','fulltip'],function($,drag,fulltip){
+    function Dialog(options){       
+        options = options || {};
+        if(options.constructor !== Object){
+            options = {};
+        }
+        this.defaults = {
+            title:"标题",
+            asksure:"一个请求",
+            text:"文字",
+            left:null,
+            top:null,
+            okFn(){
+                
+            }
+        }       
+        $.extend(this.defaults,options);
+        this.init = function(){
+            this.bind();
+        }
+        this.init();
+        new drag({
+            targetEle: this.h3
+            ,moveEle: this.diaDiv[0]
+        })
+    }
+    Dialog.prototype = {
+        bind(){
+            this.diaDiv = this.createHTML();
+            this.mask = this.createMask();
+            this.h3 = this.diaDiv[0].querySelector("h3");
+
+            this.position();
+            this.closed();
+            this.confirm();
+            this.cancel();
+            this.resize();
+            this.center();
+        }
+        ,resize(){
+            var _this = this;
+            $(window).bind("resize",_this.debuncing(_this.center,500))
+        }
+        ,debuncing(fn,delay){
+            var timer = null;
+            return function(){
+                var context = this;
+                var args = arguments;
+                clearTimeout(timer);
+                timer = setTimeout(function(){
+                    fn.apply(context,args);
+                },delay);
+            }
+        }
+        ,center(){
+            var _this = this;
+            $(_this.diaDiv).css({
+                left : ( $(window).width() - $(_this.diaDiv).outerWidth() )/2 + "px",
+                top : ( $(window).height() - $(_this.diaDiv).outerHeight() )/2 + "px",
+            })
+        }
+        ,createHTML(){
+            var diaDiv = $("<div></div>");
+            diaDiv.attr("id","full-tip");
+            var diaHTML =  `<h3 class="title clearfix">
+                                <span class="titleName">${this.defaults.title}</span>
+                                <span class="close">×</span>
+                            </h3>
+                            <section class="content clearfix">
+                                <div class="tips clearfix">
+                                    <div class="asksure">
+                                        ${this.defaults.asksure}
+                                    </div>
+                                    <div class="text">
+                                        ${this.defaults.text}
+                                    </div>
+                                </div>
+                                <div class="btnGroup">
+                                    <span class="error"></span>
+                                    <a href="javascript:void(0);" title="" class="confirm">确定</a>
+                                    <a href="javascript:void(0);" title="" class="cancle">取消</a>
+                                </div>
+                            </section>`;
+            diaDiv.html(diaHTML);
+            $("body").append(diaDiv);
+            diaDiv.css({
+                "z-index" : "100"
+            });
+            window.diaDiv = diaDiv;
+            return diaDiv;
+        }
+        ,createMask(){
+            var mask = $("<div></div>");
+            mask.addClass("mask");
+            mask.css({
+                "width":"100%",
+                "height":"100%",
+                "background":"#000",
+                "opacity": ".5",
+                "position":"fixed",
+                "left":"0",
+                "top":"0",
+                "z-index":"99"
+            });
+            $("body").append(mask);
+            return mask;
+        }
+        ,position(){
+            var isLeft = this.defaults.left !== null && !isNaN(Number(this.defaults.left));
+            var isTop = this.defaults.top !== null && !isNaN(Number(this.defaults.top));
+            var top = ($(window).height() - $(this.diaDiv).outerHeight())/2;        
+            var left = ($(window).width() - $(this.diaDiv).outerWidth())/2;
+
+            if(isLeft && isTop){
+                $(this.diaDiv).css({
+                    top : this.defaults.top + "px",
+                    left : this.defaults.left + "px"
+                })
+            }else if( isLeft ){
+                $(this.diaDiv).css({
+                    top : top + "px",
+                    left : this.defaults.left + "px"
+                })
+            }else if( isTop ){
+                $(this.diaDiv).css({
+                    top : this.defaults.top + "px",
+                    left : left + "px"
+                })
+            }else{
+                $(this.diaDiv).css({
+                    top : top + "px",
+                    left : left + "px"
+                })
+            }
+        }
+        ,closed(){
+            $("#full-tip .close").bind("click",function(){
+                $("#full-tip").remove();
+                $(".mask").remove();
+            })
+        }
+        ,confirm(){     
+            let _this = this;
+            $(".btnGroup .confirm").bind("click",function(){
+                let bl = _this.defaults.okFn();
+                if(!bl){
+                    $("#full-tip").remove();
+                    $(".mask").remove();
+                }
+            })  
+        }
+        ,cancel(){
+            $(".btnGroup .cancle").bind("click",function(){
+                $("#full-tip").remove();
+                $(".mask").remove();
+            })
+        }  
+    }
+    return Dialog;
+})
+;
 requirejs.config({
 	baseUrl: "static/scripts/src/",
 	paths:{
@@ -252,6 +490,8 @@ requirejs.config({
 		,'handle':"module/handleData/handleData"
 		,'render':"module/render/render"
 		,'fulltip':"module/fulltip/fulltip"
+		,'dialog':"module/dialog/dialog"
+		,'drag':"module/drag/drag"
 	},
 	shim: {
 		'jquery': {
@@ -259,7 +499,7 @@ requirejs.config({
 		}
 	}
 })
-require(['jquery','tool','data','render','handle','fulltip'],function($,tool,data,render,handle,fulltip){
+require(['jquery','tool','data','render','handle','fulltip','dialog','drag'],function($,tool,data,render,handle,fulltip,dialog,drag){
 	tool.resize();
 	window.onresize = tool.resize;
 	$(".path-nav").html(render.createNavHTML(0));
@@ -268,7 +508,7 @@ require(['jquery','tool','data','render','handle','fulltip'],function($,tool,dat
 	handle.getTreeById(0).classList.add("tree-nav");
 
 /*< !------------------------------   交互事件  -------------------------------  >*/
-
+	
 	function rebuild(fileId){
 		handle.getTreeById(currentId).classList.remove("tree-nav");
 		handle.getTreeById(fileId).classList.add("tree-nav");
@@ -462,6 +702,33 @@ require(['jquery','tool','data','render','handle','fulltip'],function($,tool,dat
 		}
 		create.isCreate = false;
 	}
+
+/*< !------------------------------   删除文件夹  -------------------------------  >*/
+
+	$(".nav .delete").bind("click",function(ev){
+		let selectArr = tool.whoSelect();
+		if(selectArr.length){
+			new dialog({
+				asksure : "确定要删除这张图片吗?",
+		        title : "删除文件",
+		        text : "已删除的文件可以在回收站找到",
+		        okFn(){
+		        	let idArr = [];
+					selectArr.forEach(function(value){
+						idArr.push(value.dataset.id);
+					})
+					//从data中删除所选的数据
+					handle.deleteChildsByIdArr(data,idArr);
+					treeMenu.innerHTML = render.createTreeHTML(-1);
+					rebuild(currentId);
+					fulltip("ok","删除文件成功");
+		        }
+			})
+		}else{
+			fulltip("warn","请选择删除文件");
+		}
+	})
+	
 })
 ;
 define("../../../main", function(){});

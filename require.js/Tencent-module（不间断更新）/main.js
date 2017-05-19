@@ -7,6 +7,8 @@ requirejs.config({
 		,'handle':"module/handleData/handleData"
 		,'render':"module/render/render"
 		,'fulltip':"module/fulltip/fulltip"
+		,'dialog':"module/dialog/dialog"
+		,'drag':"module/drag/drag"
 	},
 	shim: {
 		'jquery': {
@@ -14,7 +16,7 @@ requirejs.config({
 		}
 	}
 })
-require(['jquery','tool','data','render','handle','fulltip'],function($,tool,data,render,handle,fulltip){
+require(['jquery','tool','data','render','handle','fulltip','dialog','drag'],function($,tool,data,render,handle,fulltip,dialog,drag){
 	tool.resize();
 	window.onresize = tool.resize;
 	$(".path-nav").html(render.createNavHTML(0));
@@ -23,7 +25,7 @@ require(['jquery','tool','data','render','handle','fulltip'],function($,tool,dat
 	handle.getTreeById(0).classList.add("tree-nav");
 
 /*< !------------------------------   交互事件  -------------------------------  >*/
-
+	
 	function rebuild(fileId){
 		handle.getTreeById(currentId).classList.remove("tree-nav");
 		handle.getTreeById(fileId).classList.add("tree-nav");
@@ -217,4 +219,31 @@ require(['jquery','tool','data','render','handle','fulltip'],function($,tool,dat
 		}
 		create.isCreate = false;
 	}
+
+/*< !------------------------------   删除文件夹  -------------------------------  >*/
+
+	$(".nav .delete").bind("click",function(ev){
+		let selectArr = tool.whoSelect();
+		if(selectArr.length){
+			new dialog({
+				asksure : "确定要删除这张图片吗?",
+		        title : "删除文件",
+		        text : "已删除的文件可以在回收站找到",
+		        okFn(){
+		        	let idArr = [];
+					selectArr.forEach(function(value){
+						idArr.push(value.dataset.id);
+					})
+					//从data中删除所选的数据
+					handle.deleteChildsByIdArr(data,idArr);
+					treeMenu.innerHTML = render.createTreeHTML(-1);
+					rebuild(currentId);
+					fulltip("ok","删除文件成功");
+		        }
+			})
+		}else{
+			fulltip("warn","请选择删除文件");
+		}
+	})
+	
 })
