@@ -30,10 +30,43 @@ Click Me：[在线演示](https://corbusier.github.io/Tool-Instructions/require.
 ### 4.腾讯微云模块化功能拆分
 根据data数据生成的树形菜单，不同的功能拆分为模块，化整为零，利用命名空间避免全局变量污染，拆分的模块有利于代码复用，并且便于维护。不间断更新。更新的过程中可能会出现bug，发现解决之后再跟进新的版本。
 
+
+#### 更新目录：
 > May.18th.2017，暂至重命名功能，发现问题亟待解决。
->> 渲染功能模块中的data数据无法更新，带来的连锁bug反应。
+
+> May.19th.2017，以上的bug解决，问题如下所示。更新至新建文件夹功能。Keep on！
+
+> May.20th.2017，发现一个原版的小疏漏，更新重命名文件夹、删除文件夹功能。Keep on！
+
+- [x] 1. 文件区域进入下一级时，无法正确的判断全选的状态。
+
+具体描述：全选状态下，进入下一级前如果当前目录有子目录，进入下一级时全选被取消，反之则无法取消。
+
+解决方式：如果该目录下的子目录.length为0，则直接remove全选的class，并且return。然后再根据单选状态判断全选。
+
+- [x] 2. 新建文件夹成功时，treeMenu的渲染空白问题。
+
+具体描述：新建文件夹成功之后并不能根据data数据的改变进行treeMenu重绘，而是出现了一片空白区域。
+
+解决方式：分析整个新建、渲染过程，在渲染模块函数中不需要再传入data或者fileId/currentId，渲染的前提始终是以"微云"为祖先，父子级(父.id == 子.pid)关系围绕的，所以渲染函数createTreeHTML直接传入形参-1即可。
+
+- [x] 3. 新建的文件夹只会在"微云"子级中
+
+具体描述：无论是在哪个目录下创建的新文件夹，都只会出现在"微云"的子级目录下，并不会在期望出现的位置。
+
+解决方式：新产生的文件夹在data数据中，由pid确定父子级关系，而pid由currentId决定，pid是由fileId改变的，所以rebuild函数也必须作为全局函数使用，否则无法改变currentId，也就无法正确确认父子级文件目录的关系。
+
+- [x] 4. 重命名成功后，全选并没有及时的切换
+
+具体描述：当该目录下只有一个子文件，重命名后，全选的状态之后没有及时的切换。
+解决方式：重命名的Rename函数中加入全选class的remove
 
 Click Me : [完整代码](https://github.com/Corbusier/Tool-Instructions/tree/master/require.js/Tencent-module%EF%BC%88%E4%B8%8D%E9%97%B4%E6%96%AD%E6%9B%B4%E6%96%B0%EF%BC%89)
 
 Click Me : [在线演示](https://corbusier.github.io/Tool-Instructions/require.js/Tencent-module（不间断更新）/index.html)
+
+
+
+
+
 

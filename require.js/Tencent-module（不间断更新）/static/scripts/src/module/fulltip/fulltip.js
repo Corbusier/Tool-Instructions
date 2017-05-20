@@ -10,8 +10,6 @@ define(['jquery'],function($){
 		clearTimeout($(".full-tip-box").timer);
 		$(".full-tip-box").timer = setTimeout(function(){
 			$(".full-tip-box").css({top:"-32px"});
-			$(".full-tip-box").removeClass("ok");
-			$(".full-tip-box").removeClass("warn");
 		},2000);
 	};
 	return fullTip;

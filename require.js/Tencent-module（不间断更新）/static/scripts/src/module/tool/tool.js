@@ -16,7 +16,7 @@ define(function(require){
 			return Array.from(checkboxs).filter(function(value){
 				return value.classList.contains("checked");
 			}).map(function(value){
-				return $(value).closest(".file-item").get(0)
+				return $(value).closest(".file-item").get(0);
 			})
 		}
 	}

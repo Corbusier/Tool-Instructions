@@ -177,7 +177,8 @@ require(['jquery','tool','data','render','handle','fulltip','dialog','drag'],fun
 
 	$(document).bind("mousedown",createFile);
 
-	var treeMenu = document.querySelector(".tree-menu");
+	let treeMenu = document.querySelector(".tree-menu");
+	
 	function createFile(){
 		if(!create.isCreate) return;
 		let firstElement = $(".file-list .file-item").get(0);
@@ -221,7 +222,7 @@ require(['jquery','tool','data','render','handle','fulltip','dialog','drag'],fun
 	}
 
 /*< !------------------------------   删除文件夹  -------------------------------  >*/
-
+	
 	$(".nav .delete").bind("click",function(ev){
 		let selectArr = tool.whoSelect();
 		if(selectArr.length){
@@ -234,7 +235,6 @@ require(['jquery','tool','data','render','handle','fulltip','dialog','drag'],fun
 					selectArr.forEach(function(value){
 						idArr.push(value.dataset.id);
 					})
-					//从data中删除所选的数据
 					handle.deleteChildsByIdArr(data,idArr);
 					treeMenu.innerHTML = render.createTreeHTML(-1);
 					rebuild(currentId);
@@ -245,5 +245,89 @@ require(['jquery','tool','data','render','handle','fulltip','dialog','drag'],fun
 			fulltip("warn","请选择删除文件");
 		}
 	})
+
+/*< !------------------------------   重命名  -------------------------------  >*/	
 	
+	/*
+		<  !----  写的非常的粗陋，功能完成之后再考虑优化  ----  >
+		
+		发现一个原版的小疏漏：
+			当该目录下只有一个子文件，重命名后，全选的状态之后没有及时的切换
+
+		问题解决过程：
+			当keyCode == 13和点击document时作用相同，都会进入Rename函数，函数中的判断数据
+			来源于点击重命名时产生的whoSelect。
+			
+			Rename函数功能：
+
+				1.重命名点击时，先判断选框有几个
+					1). 如果只有一个，将标题和文本框状态修改，之后直接修改文本框的内容
+					2). 如果选了多个，warn,message
+					3). 没选，warn,message
+
+				2. 上一步得到的结果，需要再做一些判断是否合法
+					1). 如果标题是空值，跳过2)，进入3)
+					2). 如果标题有值存在
+						①. 和初始值相同，什么都不做
+						②. 在同一级下已存在，warn,message
+						③. 命名成功
+					3). 选区选框的状态切换，文本框和标题状态切换
+				
+				3. 重命名成功后，全选框都要移除全选
+	*/
+	let re_obj = {};
+	let rename = document.getElementsByClassName("rename")[0];
+	$(".nav .rename").bind("click",function(ev){
+		let selectArr = tool.whoSelect();
+		if(selectArr.length == 1){
+			re_obj.element = selectArr[0];
+			re_obj.fileTitle = re_obj.element.querySelector(".file-title");
+			re_obj.fileEdtor = re_obj.element.querySelector(".file-edtor");
+			re_obj.edtor = re_obj.element.querySelector(".edtor");
+			re_obj.fileTitle.style.display = "none";
+			re_obj.fileEdtor.style.display = "block";	
+			re_obj.edtor.select();		
+			re_obj.edtor.value = re_obj.fileTitle.innerHTML.trim();
+			rename.isRename = true;
+		}else if(selectArr.length > 1){
+			fulltip("warn","只能对单个文件重命名");
+		}else{
+			fulltip("warn","请选择文件");
+		}
+	})
+
+	$(".file-list").bind("keyup",function(ev){
+		if(!rename.isRename) return;
+		ev.keyCode == 13 && Rename();
+	})
+
+	$(window).on("mousedown",function(ev){
+		Rename();
+	})
+
+	function Rename(){
+		if(!rename.isRename) return;
+		let value = re_obj.edtor.value.trim();
+		if(value){
+			let isExist = handle.isTitleExist(data,value,currentId);
+			if(value === re_obj.fileTitle.innerHTML.trim()){
+			
+			}else if(isExist){
+				fulltip("warn","命名冲突，请重新命名");
+			}else{
+				fulltip("ok","命名成功");
+				re_obj.fileTitle.innerHTML = value;
+				let self = handle.getSelfById(data,re_obj.element.dataset.id);
+				self.title = value;
+				treeMenu.innerHTML = render.createTreeHTML(-1);
+			}
+		}
+		re_obj.fileTitle.style.display = "block";
+		re_obj.fileEdtor.style.display = "none";
+		re_obj.element.classList.remove("file-checked");
+		re_obj.element.querySelector(".checkbox").classList.remove("checked");	
+		rename.isRename = false;
+		$(".checked-all").removeClass("checked"); 
+	}
+
 })
