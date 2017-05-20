@@ -140,19 +140,17 @@ define(['jquery','drag','fulltip'],function($,drag,fulltip){
             })
         }
         ,confirm(){     
-            let _this = this;
             $(".btnGroup .confirm").bind("click",function(){
-                let bl = _this.defaults.okFn();
-                if(!bl){
-                    $("#full-tip").remove();
-                    $(".mask").remove();
-                }
+                $("#full-tip").remove();
+                $(".mask").remove();
+                fulltip("ok","好啊,那我们赶紧回家吧");
             })  
         }
         ,cancel(){
             $(".btnGroup .cancle").bind("click",function(){
                 $("#full-tip").remove();
                 $(".mask").remove();
+                fulltip("warn","可是我想去吃烧烤~")
             })
         }  
     }
