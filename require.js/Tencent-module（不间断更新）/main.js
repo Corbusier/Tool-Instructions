@@ -115,9 +115,6 @@ require(['jquery','tool','data','render','handle','fulltip','dialog','drag','dia
 		}
 	})
 
-	$(".file-list").bind("click",function(ev){
-		ev.stopPropagation();
-	})
 
 /*< !------------------------------   全选功能  -------------------------------  >*/
 	
@@ -188,10 +185,11 @@ require(['jquery','tool','data','render','handle','fulltip','dialog','drag','dia
 				});
 				firstElement.setAttribute("data-id",id);		
 				$(".tree-menu").html(render.createTreeHTML(-1));
+				tool.shrink();
 				fulltip("ok","新建成功");
 				let selectArr = tool.whoSelect();
 				selectArr.forEach(function(value){
-					var checkbox = value.getElementsByClassName("checkbox")[0];
+					let checkbox = value.getElementsByClassName("checkbox")[0];
 					checkbox.classList.remove("checked");
 					value.classList.remove("file-checked");
 				})
@@ -204,11 +202,14 @@ require(['jquery','tool','data','render','handle','fulltip','dialog','drag','dia
 	}
 
 /*< !------------------------------   删除文件夹  -------------------------------  >*/
+
 	let deleteFile = document.getElementsByClassName("delete")[0];
 	$(".nav .delete").bind("click",function(ev){
 		let selectArr = tool.whoSelect();
+		//deleteFile.isNewDialog = true;
 		if(deleteFile.isDelete)return;
-		if(selectArr.length){
+		if(deleteFile.isNewDialog)return;
+		if(selectArr.length){		
 			new dialog({
 				asksure : "确定要删除所选文件吗?",
 		        title : "删除文件",
@@ -220,11 +221,13 @@ require(['jquery','tool','data','render','handle','fulltip','dialog','drag','dia
 					})
 					handle.deleteChildsByIdArr(data,idArr);
 					$(".tree-menu").html(render.createTreeHTML(-1));
+					tool.shrink();
 					rebuild(currentId);
 					fulltip("ok","删除文件成功");
 		        }
 			})
 			deleteFile.isDelete = false;
+			deleteFile.isNewDialog = false;
 		}else{
 			if(!deleteFile.isDelete) return;
 			fulltip("warn","请选择删除文件");
@@ -232,7 +235,6 @@ require(['jquery','tool','data','render','handle','fulltip','dialog','drag','dia
 	})
 
 /*< !------------------------------   重命名  -------------------------------  >*/	
-	
 	/*
 		<  !----  写的非常的粗陋，功能完成之后再考虑优化  ----  >
 		
@@ -242,25 +244,10 @@ require(['jquery','tool','data','render','handle','fulltip','dialog','drag','dia
 		问题解决过程：
 			当keyCode == 13和点击document时作用相同，都会进入Rename函数，函数中的判断数据
 			来源于点击重命名时产生的whoSelect。
-			
-			Rename函数功能：
-				1.重命名点击时，先判断选框有几个
-					1). 如果只有一个，将标题和文本框状态修改，之后直接修改文本框的内容
-					2). 如果选了多个，warn,message
-					3). 没选，warn,message
-
-				2. 上一步得到的结果，需要再做一些判断是否合法
-					1). 如果标题是空值，跳过2)，进入3)
-					2). 如果标题有值存在
-						①. 和初始值相同，什么都不做
-						②. 在同一级下已存在，warn,message
-						③. 命名成功
-					3). 选区选框的状态切换，文本框和标题状态切换
-				
-				3. 重命名成功后，全选框都要移除全选
 	*/
 	let re_obj = {};
 	let rename = document.getElementsByClassName("rename")[0];
+
 	$(".nav .rename").bind("click",function(ev){
 		let selectArr = tool.whoSelect();
 		if(selectArr.length == 1){
@@ -276,12 +263,13 @@ require(['jquery','tool','data','render','handle','fulltip','dialog','drag','dia
 		}else if(selectArr.length > 1){
 			fulltip("warn","只能对单个文件重命名");
 		}else{
-			fulltip("warn","请选择文件");
+			if(!rename.isRename ) return;
+			fulltip("warn","请选择命名文件");
 		}
 	})
 
 	$(".file-list").bind("keyup",function(ev){
-		if(!rename.isRename) return;
+		if(!rename.isRename)return;
 		ev.keyCode == 13 && Rename();
 		ev.stopPropagation();
 	})
@@ -305,6 +293,7 @@ require(['jquery','tool','data','render','handle','fulltip','dialog','drag','dia
 				let self = handle.getSelfById(data,re_obj.element.dataset.id);
 				self.title = value;
 				$(".tree-menu").html(render.createTreeHTML(-1));
+				tool.shrink();
 			}
 		}
 		re_obj.fileTitle.style.display = "block";
@@ -329,6 +318,7 @@ require(['jquery','tool','data','render','handle','fulltip','dialog','drag','dia
 
 	$(document).bind("mousedown",function(ev){
 		if( ev.which !== 1 ) return;	
+		let theLast = $(".file-list>div:last-child").get(0);
 		let target = ev.target;
 		if( !$(target).closest(".file-list").get(0) ){
 			return;
@@ -348,7 +338,7 @@ require(['jquery','tool','data','render','handle','fulltip','dialog','drag','dia
 		ev.preventDefault();		
 		let disX = ev.clientX,
 			disY = ev.clientY;
-		$(document).bind("mousemove",function(ev){
+		$(document).bind("mousemove",function(ev){			
 			if(isChecked){
 				let selectArr = tool.whoSelect();
 				let fileLen = $(target).closest(".file-list").children(".file-item").length;
@@ -389,6 +379,7 @@ require(['jquery','tool','data','render','handle','fulltip','dialog','drag','dia
 					if( tool.crash(fake,fileItems[i]) ){
 						fileItems[i].classList.add("file-checked");
 						isHitElement = fileItems[i];
+						
 					}else{
 						fileItems[i].classList.remove("file-checked");
 					}
@@ -428,7 +419,7 @@ require(['jquery','tool','data','render','handle','fulltip','dialog','drag','dia
 													 : $(".checked-all").removeClass("checked");
 			}
 		})
-		$(document).bind("mouseup",function(){
+		$(document).bind("mouseup",function(ev){
 			$(document).off("mousemove");
 			$(document).off("mouseup");
 			if( div ){
@@ -441,43 +432,44 @@ require(['jquery','tool','data','render','handle','fulltip','dialog','drag','dia
 
 				fake = null;
 				thumbnail = null;
-			}		
-			// if(isHitElement){
-			// 	let onOff = false;
-			// 	let selectArr = tool.whoSelect();
-			// 	let selectIdArr = selectArr.map(function(value){
-			// 		return value.dataset.id;
-			// 	})
-			// 	let fileId = isHitElement.dataset.id;
-			// 	for(let i = 0,len=selectIdArr.length;i<len;i++){
-			// 		let self = handle.getSelfById(data,selectIdArr[i]);
-			// 		let isExist = handle.isTitleExist(data,self.title,fileId);
-			// 		let fileList = document.querySelector(".file-list");
-			// 		if(!isExist){
-			// 			self.pid = fileId;
-						
-			// 		}else{
-			// 			onOff = true;
-			// 		}
-			// 	}
-			// 	if(onOff){
-			// 		fulltip("warn","部分文件因重名移动失败");
-			// 	}
-			// 	$(".tree-menu").html(render.createTreeHTML(-1));
-			// 	isHitElement = null;
-			// }
+			}	
+			if(isHitElement == theLast )return;
+			if(isHitElement){
+				let onOff = false;
+				let selectArr = tool.whoSelect();
+				let selectIdArr = selectArr.map(function(value){
+					return value.dataset.id;
+				})
+				let fileId = isHitElement.dataset.id;
+				for(let i = 0;i<selectIdArr.length;i++){
+					let self = handle.getSelfById(data,selectIdArr[i]);
+					let isExist = handle.isTitleExist(data,self.title,fileId);
+					if(!isExist){
+						self.pid = fileId;
+						fileList.removeChild(selectArr[i]);
+					}else{
+						onOff = true;
+					}
+				}
+				if(onOff){
+					fulltip("warn","部分文件因重名移动失败");	
+				}
+				$(".tree-menu").html(render.createTreeHTML(-1));
+				isHitElement = null;
+			}
 		})
 	})
 
 /*< !------------------------------   移动到  -------------------------------  >*/	
 	
 	let move = document.getElementsByClassName("move")[0];
-	$(".nav .move").bind("click",function(){
+	let dialogMove = document.getElementsByClassName("mask")[0];
+	$(".nav .move").bind("click",function(ev){
 		let fileId = null;
 		let moveStatus = true;
 		let selectArr = tool.whoSelect();
 		let selectIdArr = [];
-		if(move.isMoved)return;
+		if(move.isMoved)return;		
 		for(var i = 0;i<selectArr.length;i++){
 			selectIdArr.push(selectArr[i].dataset.id);
 		}
@@ -505,7 +497,8 @@ require(['jquery','tool','data','render','handle','fulltip','dialog','drag','dia
 						if(onOff){
 							fulltip("warn","文件因重名移动失败");
 						}
-						$(".tree-menu").html(render.createTreeHTML(-1))
+						$(".tree-menu").html(render.createTreeHTML(-1));
+						tool.shrink();
 					}
 	            }
 			})
@@ -547,7 +540,7 @@ require(['jquery','tool','data','render','handle','fulltip','dialog','drag','dia
 			})
 			move.isMoved = false;
 		}else{
-			if(move.isMoved == false) return;	
+			if(!move.isMoved) return;	
 			fulltip("warn","请选择要移动的文件夹");			
 		}
 	})

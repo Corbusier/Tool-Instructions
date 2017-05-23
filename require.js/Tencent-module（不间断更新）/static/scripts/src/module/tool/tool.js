@@ -42,7 +42,7 @@ define(function(require){
 			}
 		}
 		,shrink(){
-			$(".tree-menu").bind("click",function(ev){
+			$(".tree-menu .ico").bind("click",function(ev){
 				console.log(ev.target.closest(".tree-title"))
 				$(ev.target).closest(".tree-title").toggleClass("show-list");
 				let $ulList = $(ev.target).closest(".tree-title").next();
