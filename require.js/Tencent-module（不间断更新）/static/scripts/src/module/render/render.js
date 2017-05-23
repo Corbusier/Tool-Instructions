@@ -2,14 +2,13 @@ define(['data','handle'],function(data,handle){
 	let render = {
 		createTreeHTML(id){
 			let childs = handle.getChildsById(data,id);
-			//console.log(childs)
 			let html = "<ul>";
 			childs.forEach( (value) => {
 				let level = handle.getParentsAllById(data,value.id).length;
 				let childs2 = handle.getChildsById(data,value.id);
 				let className = childs2.length ? "tree-contro" : "tree-contro-none";
 				html += `<li>
-	                    <div style="padding-left:${level*14}px;" class="tree-title ${className} " data-id=${value.id}>
+	                    <div style="padding-left:${level*14}px;" class="tree-title show-list ${className} " data-id=${value.id}>
 	                        <span>
 	                            <strong class="ellipsis">${value.title}</strong>
 	                            <i class="ico"></i>
@@ -74,15 +73,6 @@ define(['data','handle'],function(data,handle){
 			div.innerHTML = render.fileInner({});
 			return div;
 		}
-		// ,createFile(){
-		// 	if(!$(".create").get(0).isCreate) return;
-		// 	let firstElement = $(".file-list .file-item");
-		// 	let value = $(".file-list .file-item .edtor").val().trim();
-		// 	if(value){
-		// 		var isExist = handle.isTitleExist(data,value,currentId);
-		// 		console.log(isExist)
-		// 	}
-		// }
 	}
 	return render;
 })

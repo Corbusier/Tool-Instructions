@@ -18,6 +18,40 @@ define(function(require){
 			}).map(function(value){
 				return $(value).closest(".file-item").get(0);
 			})
+		},
+		getRect(obj){
+			return obj.getBoundingClientRect();
+		},
+		crash(obj1,obj2){
+			let first_Rect = tool.getRect(obj1);
+			let second_Rect = tool.getRect(obj2);
+
+			let firstLeft = first_Rect.left;
+			let firstTop = first_Rect.top;
+			let firstRight = first_Rect.right;
+			let firstBottom = first_Rect.bottom;
+
+			let secondLeft = second_Rect.left;
+			let secondTop = second_Rect.top;
+			let secondRight = second_Rect.right;
+			let secondBottom = second_Rect.bottom;
+			if(firstLeft > secondRight || firstRight < secondLeft || firstTop > secondBottom || firstBottom < secondTop){
+				return false;
+			}else{
+				return true;
+			}
+		}
+		,shrink(){
+			$(".tree-menu").bind("click",function(ev){
+				console.log(ev.target.closest(".tree-title"))
+				$(ev.target).closest(".tree-title").toggleClass("show-list");
+				let $ulList = $(ev.target).closest(".tree-title").next();
+				if($(ev.target).closest(".tree-title").hasClass("show-list")){
+					$ulList.css("display","block");
+				}else{
+					$ulList.css("display","none");
+				}	
+			})
 		}
 	}
 	return tool;

@@ -10,6 +10,7 @@
 		,'fulltip':"module/fulltip/fulltip"
 		,'dialog':"module/dialog/dialog"
 		,'drag':"module/drag/drag"
+		,'dialogmove':"module/dialogMove/dialogMove"
 	},
 	shim: {
 		'jquery': {

@@ -138,6 +138,12 @@ define(['jquery','drag','fulltip'],function($,drag,fulltip){
                 $("#full-tip").remove();
                 $(".mask").remove();
             })
+            $(document).bind("keydown",function(ev){
+                if(ev.keyCode == 27){
+                    $("#full-tip").remove();
+                    $(".mask").remove();
+                }
+            })
         }
         ,confirm(){     
             let _this = this;
