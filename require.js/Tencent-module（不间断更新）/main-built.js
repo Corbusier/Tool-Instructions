@@ -862,9 +862,11 @@ require(['jquery','tool','data','render','handle','fulltip','dialog','drag','dia
 	}
 
 /*< !------------------------------   删除文件夹  -------------------------------  >*/
-	
+
+	let deleteFile = document.getElementsByClassName("delete")[0];
 	$(".nav .delete").bind("click",function(ev){
 		let selectArr = tool.whoSelect();
+		if(deleteFile.isDelete)return;
 		if(selectArr.length){
 			new dialog({
 				asksure : "确定要删除所选文件吗?",
@@ -881,7 +883,9 @@ require(['jquery','tool','data','render','handle','fulltip','dialog','drag','dia
 					fulltip("ok","删除文件成功");
 		        }
 			})
+			deleteFile.isDelete = false;
 		}else{
+			if(!deleteFile.isDelete) return;
 			fulltip("warn","请选择删除文件");
 		}
 	})
@@ -1202,7 +1206,7 @@ require(['jquery','tool','data','render','handle','fulltip','dialog','drag','dia
 			})
 			move.isMoved = false;
 		}else{
-			if(move.isMoved == false) return;	
+			if(!move.isMoved) return;	
 			fulltip("warn","请选择要移动的文件夹");			
 		}
 	})
