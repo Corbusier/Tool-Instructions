@@ -59,6 +59,7 @@ Click Me：[在线演示](https://corbusier.github.io/Tool-Instructions/require.
 - [x] 4. 重命名成功后，全选并没有及时的切换
 
 具体描述：当该目录下只有一个子文件，重命名后，全选的状态之后没有及时的切换。
+
 解决方式：重命名的Rename函数中加入全选class的remove
 
 Click Me : [完整代码](https://github.com/Corbusier/Tool-Instructions/tree/master/require.js/Tencent-module%EF%BC%88%E4%B8%8D%E9%97%B4%E6%96%AD%E6%9B%B4%E6%96%B0%EF%BC%89)

@@ -34,7 +34,9 @@ Click Me：[在线演示](https://corbusier.github.io/Tool-Instructions/require.
 #### 更新目录：
 > May.18th.2017，暂至重命名功能，发现问题亟待解决。
 
-> May.19th.2017，以上的bug解决，问题如下所示。Keep on
+> May.19th.2017，以上的bug解决，问题如下所示。更新至新建文件夹功能。Keep on！
+
+> May.20th.2017，发现一个原版的小疏漏，更新重命名文件夹、删除文件夹功能。Keep on！
 
 - [x] 1. 文件区域进入下一级时，无法正确的判断全选的状态。
 
@@ -54,10 +56,15 @@ Click Me：[在线演示](https://corbusier.github.io/Tool-Instructions/require.
 
 解决方式：新产生的文件夹在data数据中，由pid确定父子级关系，而pid由currentId决定，pid是由fileId改变的，所以rebuild函数也必须作为全局函数使用，否则无法改变currentId，也就无法正确确认父子级文件目录的关系。
 
+- [x] 4. 重命名成功后，全选并没有及时的切换
+
+具体描述：当该目录下只有一个子文件，重命名后，全选的状态之后没有及时的切换。
+
+解决方式：重命名的Rename函数中加入全选class的remove
+
 Click Me : [完整代码](https://github.com/Corbusier/Tool-Instructions/tree/master/require.js/Tencent-module%EF%BC%88%E4%B8%8D%E9%97%B4%E6%96%AD%E6%9B%B4%E6%96%B0%EF%BC%89)
 
 Click Me : [在线演示](https://corbusier.github.io/Tool-Instructions/require.js/Tencent-module（不间断更新）/index.html)
-
 
 
 
