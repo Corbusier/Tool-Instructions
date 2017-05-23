@@ -60,9 +60,10 @@ Click Me：[在线演示](https://corbusier.github.io/Tool-Instructions/require.
 
 具体描述：当该目录下只有一个子文件，重命名后，全选的状态之后没有及时的切换。
 
-解决方式：重命名的Rename函数中加入全选class的remove
+解决方式：重命名的Rename函数中加入全选class的remove。
 
 重命名Rename函数功能：
+
 	1.重命名点击时，先判断选框有几个
 		1). 如果只有一个，将标题和文本框状态修改，之后直接修改文本框的内容
 		2). 如果选了多个，warn,message
