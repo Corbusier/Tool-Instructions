@@ -115,7 +115,6 @@ require(['jquery','tool','data','render','handle','fulltip','dialog','drag','dia
 		}
 	})
 
-
 /*< !------------------------------   全选功能  -------------------------------  >*/
 	
 	$(".checked-all").bind("click",function(){
@@ -206,10 +205,11 @@ require(['jquery','tool','data','render','handle','fulltip','dialog','drag','dia
 	let deleteFile = document.getElementsByClassName("delete")[0];
 	$(".nav .delete").bind("click",function(ev){
 		let selectArr = tool.whoSelect();
-		//deleteFile.isNewDialog = true;
 		if(deleteFile.isDelete)return;
 		if(deleteFile.isNewDialog)return;
 		if(selectArr.length){		
+			let dialogDelete = $("#full-tip").get(0);
+			if( document.body.contains(dialogDelete) )return;
 			new dialog({
 				asksure : "确定要删除所选文件吗?",
 		        title : "删除文件",
@@ -318,7 +318,6 @@ require(['jquery','tool','data','render','handle','fulltip','dialog','drag','dia
 
 	$(document).bind("mousedown",function(ev){
 		if( ev.which !== 1 ) return;	
-		let theLast = $(".file-list>div:last-child").get(0);
 		let target = ev.target;
 		if( !$(target).closest(".file-list").get(0) ){
 			return;
@@ -340,7 +339,6 @@ require(['jquery','tool','data','render','handle','fulltip','dialog','drag','dia
 			disY = ev.clientY;
 		$(document).bind("mousemove",function(ev){			
 			if(isChecked){
-				let selectArr = tool.whoSelect();
 				let fileLen = $(target).closest(".file-list").children(".file-item").length;
 				if(Math.abs(ev.clientX - disX)<5||Math.abs(ev.clientY - disY)<5||selectArr.length == 0||selectArr.length == fileLen){
 					return;
@@ -407,18 +405,16 @@ require(['jquery','tool','data','render','handle','fulltip','dialog','drag','dia
 					if(tool.crash(div,fileItems[i])){
 						fileItems[i].classList.add("file-checked");
 						checkboxs[i].classList.add("checked");
-						isHitElement = fileItems[i];
 					}else{
 						fileItems[i].classList.remove("file-checked");
 						checkboxs[i].classList.remove("checked");
-						isHitElement = null;
 					}
 				}
 				let selectArr = tool.whoSelect();
 				selectArr.length == fileItems.length ? $(".checked-all").addClass("checked")
 													 : $(".checked-all").removeClass("checked");
 			}
-		})
+		})		
 		$(document).bind("mouseup",function(ev){
 			$(document).off("mousemove");
 			$(document).off("mouseup");
@@ -429,11 +425,10 @@ require(['jquery','tool','data','render','handle','fulltip','dialog','drag','dia
 			if( thumbnail ){
 				document.body.removeChild(fake);
 				document.body.removeChild(thumbnail);
-
 				fake = null;
 				thumbnail = null;
 			}	
-			if(isHitElement == theLast )return;
+
 			if(isHitElement){
 				let onOff = false;
 				let selectArr = tool.whoSelect();
@@ -455,6 +450,8 @@ require(['jquery','tool','data','render','handle','fulltip','dialog','drag','dia
 					fulltip("warn","部分文件因重名移动失败");	
 				}
 				$(".tree-menu").html(render.createTreeHTML(-1));
+				tool.shrink();
+				$(isHitElement).removeClass("file-checked");
 				isHitElement = null;
 			}
 		})
@@ -470,10 +467,12 @@ require(['jquery','tool','data','render','handle','fulltip','dialog','drag','dia
 		let selectArr = tool.whoSelect();
 		let selectIdArr = [];
 		if(move.isMoved)return;		
-		for(var i = 0;i<selectArr.length;i++){
+		for(let i = 0;i<selectArr.length;i++){
 			selectIdArr.push(selectArr[i].dataset.id);
 		}
 		if(selectIdArr.length){
+			let dialogMove = $("#full-pop").get(0);
+			if( document.body.contains(dialogMove) )return;
 			new dialogmove({
 				titleName : "选择储存位置",
 	            fileTitle : handle.getSelfById(data,selectIdArr[0]).title,
@@ -490,6 +489,7 @@ require(['jquery','tool','data','render','handle','fulltip','dialog','drag','dia
 								self.pid = fileId;
 								fileList.removeChild(selectArr[i]);
 								fulltip("ok","文件移动成功");
+								$(".checked-all").removeClass("checked")
 							}else{
 								onOff = true;
 							}
@@ -503,7 +503,7 @@ require(['jquery','tool','data','render','handle','fulltip','dialog','drag','dia
 	            }
 			})
 			if(selectArr.length > 1){
-				var fileNum = document.getElementsByClassName("fileNum")[0];
+				let fileNum = document.getElementsByClassName("fileNum")[0];
 				$(".fileNum").html("等" +selectIdArr.length+ "个文件")
 			}
 			let selectData = handle.getChildsByIdArr(data,selectIdArr);
@@ -515,15 +515,15 @@ require(['jquery','tool','data','render','handle','fulltip','dialog','drag','dia
 					currentElement.removeClass("tree-nav");
 					target.addClass("tree-nav");
 					currentElement = target;
-					fileId = target.get(0).dataset.id;
+					fileId = $(target).data("id");
 					let oneData = handle.getSelfById(data,fileId);
 					let selfData = handle.getSelfById(data,selectIdArr[0]);
 					if(fileId == selfData.pid){
 						$(".error").html("该文件下已经存在");
 						return;
 					}
-					var onOff = false;
-					for(var i = 0;i<selectData.length;i++){
+					let onOff = false;
+					for(let i = 0;i<selectData.length;i++){
 						if(oneData.id == selectData[i].id){
 							onOff = true;
 							break;
