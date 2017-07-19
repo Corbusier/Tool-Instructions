@@ -26,7 +26,7 @@
 
 ### AMD
 Asynchronous Module Definition 规范其实只有一个主要接口 define(id?, dependencies?, factory)，它要在声明模块的时候指定所有的依赖 dependencies，并且还要当做形参传到 factory 中，对于依赖的模块提前执行，依赖前置。
-```
+```js
     define("module", ["dep1", "dep2"], function(d1, d2) {
       return someExportedValue;
     });
@@ -60,7 +60,7 @@ ES6模块的设计思想，是尽量的静态化，使得编译时就能确定�
 ### 所有的资源都是模块
 上述的模块都是JS模块文件，在前端开发过程中还涉及到样式、图片、字体、HTML 模板等等众多的资源。这些资源还会以各种方言的形式存在，比如 coffeescript、 less、 sass、众多的模板库、多语言系统（i18n）等等。
 如果他们都可以视作模块，并且都可以通过require的方式来加载，比如：
-```
+```js
     require("./style.css");
     require("./style.less");
     require("./template.jade");
@@ -141,22 +141,22 @@ Loader 可以理解为是模块和资源的转换器，它本身是一个函数�
  - Loader 可以分发出附加的任意文件。
 
 安装loader:
-```
+```js
     npm install css-loader style-loader
 ```
 写入一个style.css:
-```
+```js
     /* style.css */
 body { background: yellow; }
 ```
 修改之前的entry.js：
-```
+```js
     require("!style-loader!css-loader!./style.css") // 载入 style.css
 document.write('It works.')
 document.write(require('./module.js'))
 ```
 将 entry.js 中的 require("!style!css!./style.css") 修改为 require("./style.css"),再执行:
-```
+```js
     webpack entry.js bundle.js --module-bind "css=style-loader!css-loader"
 ```
     在该电脑下是双引号
@@ -165,7 +165,7 @@ document.write(require('./module.js'))
 
 ### 配置文件
 除了以上的传入参数的方法,还可以通过指定的配置文件来执行,默认情况下,会搜索当前目录的webpack.config.js文件,这个文件是一个node.js模块,返回一个json格式的配置信息对象,或者通过--config选项来配置文件,在根目录下(D:\nodejs\node_globalnpm)创建 packge.json来添加webpack需要的以来:
-```
+```js
     {
       "name": "webpack-example",
       "version": "1.0.0",
@@ -194,7 +194,7 @@ document.write(require('./module.js'))
 ``` 
 然后npm install。
 接着创建配置文件webpack.config.js：
-```
+```js
     var webpack = require('webpack')
 
     module.exports = {
@@ -219,7 +219,7 @@ document.write(require('./module.js'))
 Webpack 本身内置了一些常用的插件，还可以通过 npm 安装第三方插件。
 
 修改 webpack.config.js，添加 plugins：
-```
+```js
     var webpack = require('webpack')
 
     module.exports = {
@@ -239,7 +239,7 @@ Webpack 本身内置了一些常用的插件，还可以通过 npm 安装第三�
     }
 ```
 运行webpack,打开bundle.js,可以看到
-```
+```js
     /*! This file is created by quwei */
     /******/ (function(modules) { // webpackBootstrap
     /******/ 	// The module cache
@@ -249,12 +249,12 @@ Webpack 本身内置了一些常用的插件，还可以通过 npm 安装第三�
 
 ### 开发环境
 当项目逐渐变大，webpack 的编译时间会变长，可以通过参数让编译的输出内容带有进度和颜色。
-```
+```js
     webpack --progress --colors
 ```
 
 如果不想每次修改模块后都重新编译，那么可以启动监听模式。开启监听模式后，没有变化的模块会在编译后缓存到内存中，而不会每次都被重新编译，所以监听模式的整体速度是很快的。
-```
+```js
     webpack --progress --colors --watch
 ```
 
@@ -287,7 +287,7 @@ webpack中配置的打包的使用webpack的plugin, 压缩ES6代码可以按照�
 
 ### webpack打包ES6
 首先，建立如下的目录：
-```
+```js
     /web根目录
     -es6
        main.js
@@ -297,13 +297,13 @@ webpack中配置的打包的使用webpack的plugin, 压缩ES6代码可以按照�
 ```
  es6里面存放的ES6风格的代码,main.js作为入口文件,使用 babel 对 ES6 风格的代码进行转换，所以要安装babel-loader 加载器，在命令行输入如下命令：
  
-```
+```js
     npm install babel-preset-es2015 --sava-dev //安装转码规则
     npm install babel-loader --save-dev //安装 babel-loader
     
 ```
 #### webpack配置文件
-```
+```js
     var webpack = require('webpack');
     var path = require('path');
     
@@ -331,14 +331,14 @@ webpack中配置的打包的使用webpack的plugin, 压缩ES6代码可以按照�
 ``` 
 #### 有关代码
 ##### main.js
-```
+```js
     import Person from './Person.js';
 
     let p = new Person ('张三',20);
     document.write(p.say());
 ```
 #### index.html
-```
+```js
     <!DOCTYPE html>
     <html>
     <head>
@@ -351,7 +351,7 @@ webpack中配置的打包的使用webpack的plugin, 压缩ES6代码可以按照�
     </html>
 ```
 #### classPerson
-```
+```js
     class Person{ 
         constructor(name, age){ 
             this.name = name; 
@@ -363,3 +363,122 @@ webpack中配置的打包的使用webpack的plugin, 压缩ES6代码可以按照�
     }
     export default Person;
 ```
+
+### 参考配置(7.18日)
+```js
+    var webpack = require('webpack');
+    var path = require('path');
+    
+    module.exports = {
+      entry:{
+        main:'./main.js'//入口文件
+      },
+      output: {//打包输出的文件
+        path: __dirname,
+        //path: path.resolve(__dirname, 'build'),  //__dirname + '/build'
+        filename: 'bundle.js'
+      },
+      module: {
+        loaders: [
+          {
+            test: path.join(__dirname,'es6'),
+            loader: 'babel-loader',
+            query: {
+              presets: ['es2015']
+            }
+          },
+          {
+            test: /\\.html/,
+            loader:'html'
+          },
+          {
+            test: /\\.scss/,
+            loader:'style!css!sass',
+            loaders:['style','css','sass']
+          },
+          {
+            test: /\.css$/,
+            use: ['style-loader', 'css-loader','postcss-loader']
+          },
+          {
+            test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
+            loader: 'url-loader',
+            options: {
+                limit: 10000,
+                name: 'img/[name]_[hash:7].[ext]'
+            }
+          },
+          {
+            test: /\.(png|jpg)$/, 
+            loader: "url-loader?limit=8192"
+          },
+          {
+            test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
+            loader: 'url-loader',
+            options: {
+                limit: 10000,
+                name: 'fonts/[name].[hash:7].[ext]'
+            }
+          }
+        ]
+      },
+      plugins: [
+        new webpack.optimize.UglifyJsPlugin({
+          compress:{
+            warnings: false,
+            drop_debugger: true,
+            drop_console: true
+          }
+        })
+      ],
+      resolve: {// 现在你require文件的时候可以直接使用require('file')，不用使用require('file.coffee')
+        alias: {
+          'vue$': 'vue/dist/vue.esm.js',
+          '@': path.join(__dirname, 'src')
+        },
+        extensions: ['', '.js', '.json', '.coffee', '.vue', '.css']
+      }
+    };
+```
+
+这个配置文件一直都是可以正常工作的，昨日(7.17)突然出现
+```js
+    throw new Error("Element from loaders list should have one of the fields 'loader' or 'loaders'");
+    ^
+```
+今天又突然好了...。
+
+## 安装部署Vue开发环境
+
+为了方便大型应用的开发，尤雨溪开发了Vue-cli脚手架，提供了一系列的工具和库，方便我们快速的进行开发，具体功能包括单文件 Vue 组件，热加载，保存时检查代码，单元测试等，本质上和Express的express-generator是一样的。
+
+因为vue-cli依赖webpack,所以首先安装webpack这个工具:
+```js
+    npm install -g webpack
+```
+
+然后安装vue-cli:
+```js
+    npm install -g vue-cli
+```
+
+使用方法如下:
+```js
+    vue init webpack my-project
+    cd my-project
+    npm install
+    npm run dev
+```
+执行完成后在浏览器中localhost:8080查看。
+
+当然你可以用一个更加方便的方式进行安装，可以直接在package.json中，添加相应的依赖（如上面的代码），之后的命令行中运行npm intall，它会自动帮我们安装相应的依赖。
+
+例如之前一直安装失败的vue，从node的反馈上来说是package文件中的依赖找不到vue，所以失败。尝试这样的方式安装。
+
+```js
+    "devDependencies": {
+        "vue": "^2.4.1"
+    },
+```
+写完之后再运行安装vue，此时就可以安装成功。
+
